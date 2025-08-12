@@ -1,14 +1,14 @@
 
-# cov_summary
+# covSummary
 
-This package provides a convenient function to summarise all methylation
-coverage (.cov) files in a given directory. The function will iterate
-through each cov file to obtain the mean methylation and additional QC
-metrics. Results for all samples will be saved into a single dataframe
-and text (.tsv) file. It is also possible to provide an annotation file
-that contains specific regions of interest that you would the analysis
-to focus on. This annotation file must contain at least three columns
-‘chr’, ‘start’, and ’end.
+This R package provides a convenient function to summarise all
+methylation coverage (.cov) files in a given directory. The function
+will iterate through each cov file to obtain the mean methylation and
+additional QC metrics. Results for all samples will be saved into a
+single dataframe and text (.tsv) file. It is also possible to provide an
+annotation file that contains specific regions of interest that you
+would the analysis to focus on. This annotation file must contain at
+least three columns ‘chr’, ‘start’, and ’end.
 
 This function was originally developed alongside our previously
 published sequencing technique ‘(sc)TEM-seq’ which amplified and
@@ -38,7 +38,7 @@ install_github("SBurnard/covSummary")
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(cov.summary)
+library(covSummary)
 ## Most basic usage using all defaults
 cov_summary(
   cov.dir = "./data/"
@@ -53,14 +53,14 @@ cov_summary(
 To run with parallel processing and using annotation file:
 
 ``` r
-library(cov.summary)
+library(covSummary)
 library(doparallel)
 cov_summary(
-  cov.dir = system.file("extdata", package = "cov_summary"),
+  cov.dir = system.file("extdata", package = "covSummary"),
   output.dir = "./results/",
   cov.suffix = "cov.gz" ,
   chr.to.keep = c(1:22,"X", "Y", "y", "x"),
-  anno = paste0(system.file("extdata", package = "cov_summary"),"/SINE.Alu.anno_chr22.txt"),
+  anno = paste0(system.file("extdata", package = "covSummary"),"/SINE.Alu.anno_chr22.txt"),
   run.parallel = TRUE,
   n.cores = NA)
 ```
