@@ -1,0 +1,124 @@
+
+# cov_summary
+
+This package provides a convenient function to summarise all methylation
+coverage (.cov) files in a given directory. The function will iterate
+through each cov file to obtain the mean methylation and additional QC
+metrics. Results for all samples will be saved into a single dataframe
+and text (.tsv) file. It is also possible to provide an annotation file
+that contains specific regions of interest that you would the analysis
+to focus on. This annotation file must contain at least three columns
+‘chr’, ‘start’, and ’end.
+
+This function was originally developed alongside our previously
+published sequencing technique ‘(sc)TEM-seq’ which amplified and
+measured SINE-Alu elements. Therefore, I have also included two
+functions that can generate an ‘up-to-date’ SINE-Alu annotation that can
+be used for TEM-seq analyses.
+
+## Installation
+
+If devtools is already installed.
+
+``` r
+install_github("SBurnard/covSummary")
+```
+
+Otherwise install devtools first:
+
+``` r
+install.packages("devtools")
+library("devtools") 
+
+install_github("SBurnard/covSummary")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+``` r
+library(cov.summary)
+## Most basic usage using all defaults
+cov_summary(
+  cov.dir = "./data/"
+  )
+## Using available test data
+cov_summary(
+  cov.dir = system.file("extdata", package = "cov_summary"),
+  output.dir = "./results/"
+  )
+```
+
+To run with parallel processing and using annotation file:
+
+``` r
+library(cov.summary)
+library(doparallel)
+cov_summary(
+  cov.dir = system.file("extdata", package = "cov_summary"),
+  output.dir = "./results/",
+  cov.suffix = "cov.gz" ,
+  chr.to.keep = c(1:22,"X", "Y", "y", "x"),
+  anno = paste0(system.file("extdata", package = "cov_summary"),"/SINE.Alu.anno_chr22.txt"),
+  run.parallel = TRUE,
+  n.cores = NA)
+```
+
+*Parallel processing will be much slower with only a few samples and
+quicker when done sequentially (non-parallel).*
+
+# Summary table
+
+The output table will have 7 columns without an annotation, and 13
+columns if an annotation is provided.
+
+Table columns:
+
+- **cov_file** - cov file name.
+
+- **N_unique_cytosines** - number of unique cytosine positions measured.
+
+- **Average_methylation** - Global mean methylation of sample.
+  Calculated by mean of all CpG % methylated.
+
+- **Percent_digital** - Percentage of CpGs that are either 0 or 100%
+  methylated.
+
+- **N_dup_cytosines_in_cov** - Number of cytosines that were found to be
+  duplicates within the cov file. This might be \> 0, if multiple .covs
+  were merged into a single cov such as using the ‘dirty harry’
+  processing method for PBAT sequencing.
+
+- **N_met_cytosines** - Total number of methylated cytosines detected.
+
+- **N_cytosine_measured** - Total number of cytosines measured.
+
+- **N_anno_detected** - Number of genomic regions (rows) in the
+  annotation that overlapped with measured cytosines.
+
+- **N_unique_cytosines_in_anno** - number of unique cytosine positions
+  measured within the annotation.
+
+- **Percent_Unique_cytosines_in_anno** - Percentage of unique cytosines
+  in annotation (compared to ‘N_unique_cytosines’)
+
+- **Average_methylation_Anno_only** - Mean methylation of sample for
+  cytosines within annotation.
+
+- **N_met_cytosines_in_anno** - Total number of methylated cytosines
+  detected within annotation.
+
+- **N_cytosine_measured_in_anno** - Total number of cytosines measured
+  within annotation.
+
+N.B Mean methylation of samples is calculated by mean of ‘percent
+methylation’ at each CpG site. The reason being is to minimise bias of
+CpGs that might have higher depth, so this provides an ‘average’ of the
+methylation across all positions relative to the depth detected at each
+site.
+
+# To do
+
+1.  Add example table output
+2.  Add example plot

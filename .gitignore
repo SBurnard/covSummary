@@ -1,0 +1,13 @@
+# RStudio files
+.Rproj
+.Rhistory
+.Rdata
+.Ruserdata
+
+# R package build artifacts
+.Rbuildignore
+
+# Additional files to ignore
+data*
+notebook*
+.Rproj.user
